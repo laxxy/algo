@@ -1,89 +1,87 @@
+
 package algo;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class MergeSorting {
 
     public static void main(String[] args) {
         List<Integer> list = new ArrayList<>();
+        int[] arr = new int[20];
 
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 20; i++) {
             int i1 = new Random().nextInt(20);
             list.add(i1);
+            arr[i] = i1;
         }
 
-        List<Integer> sort = sort(list);
-        System.out.println(sort.toString());
+        long startTime1 = System.nanoTime();
+        int[] sort1 = sort(arr);
+        long stopTime2 = System.nanoTime();
+
+        System.out.println(Arrays.toString(sort1)  + " time: " + (stopTime2 - startTime1)  + " " + sort1.length);
+
+        System.out.println("before : " + list.toString());
+        long startTime = System.nanoTime();
+        int[] sort = sort1(arr);
+        long stopTime = System.nanoTime();
+        System.out.println(Arrays.toString(sort) + " time: " + (stopTime - startTime)  + " " + arr.length);
+
     }
 
-    private static List<Integer> sort(List<Integer> list) {
-        if (list.size() < 2) return list;
+    private static int[] sort1(int[] list) {
+        if (list.length < 2) return list;
 
-        List<Integer> sub1 = list.subList(0, list.size() >> 1);
-        List<Integer> sub2 = list.subList(list.size() >> 1, list.size());
+        int[] sub1 = Arrays.copyOfRange(list, 0, list.length >> 1);
+        int[] sub2 = Arrays.copyOfRange(list, list.length >> 1, list.length);
 
-        List<Integer> sort = sort(sub1);
-        List<Integer> sort1 = sort(sub2);
-
-        return merge(sort, sort1);
+        return merge1(sort1(sub1), sort1(sub2));
     }
 
-    private static List<Integer> merge(List<Integer> sort, List<Integer> sort1) {
-        List<Integer> tmp = new ArrayList<>();
-
-        if (sort1.size() > sort.size()) {
-            List<Integer> tp = sort;
-            sort = sort1;
-            sort1 = tp;
-        }
-
-        System.out.println(sort.toString() + " << " + sort1.toString());
-
-        for (int i = 0; i < sort.size(); i++) {
-            if (sort.size() == 1 && sort1.size() == 1) {
-                if (sort1.get(0) < sort.get(0)) {
-                    tmp.add(sort1.get(0));
-                    tmp.add(sort.get(0));
-                } else {
-                    tmp.add(sort.get(0));
-                    tmp.add(sort1.get(0));
-                }
-                break;
-            } else {
-                if (i < sort1.size()) {
-                    Integer left = sort.get(i);
-                    Integer right = sort1.get(i);
-
-                    tmp.add(right < left ? right : left);
-                    if (right < left) {
-                        sort.set(i, right);
-                        sort1.set(i, left);
-                    }
-
-                    tmp.add(sort1.get(i) < sort.get(i + 1)
-                            ? sort1.get(i) : sort.get(i + 1));
-
-                    if (sort1.get(i) < sort.get(i + 1)) {
-                        int tm = sort.get(i + 1);
-                        sort.set(i + 1, sort1.get(i));
-                        sort1.set(i, tm);
-                    }
-
-                    tmp.add(sort1.get(i) < sort.get(i + 1)
-                            ? sort.get(i + 1) : sort1.get(i));
-
-                    i++;
-
-                    if (sort1.size() > i)
-                        tmp.add(sort1.get(i));
-                }
-                else
-                    tmp.add(sort.get(i));
+    private static int[] merge1(int[] sort, int[] sort1) {
+        int p1 = 0;
+        int p2 = 0;
+        int[] list = new int[sort.length + sort1.length];
+        for (int i = 0; i < sort.length + sort1.length; i++) {
+            if (sort.length == p1)
+                list[i] = sort1[p2++];
+            else if (sort1.length == p2)
+                list[i] = sort[p1++];
+            else{
+                if (sort1[p2] < sort[p1])
+                    list[i] = sort1[p2++];
+                else list[i] = sort[p1++];
             }
         }
-        System.out.println(sort.toString() + " <<  result " + sort1.toString() + "  " + tmp);
-        return tmp;
+        return list;
+    }
+
+    public static int[] sort(int[] arr){
+        if(arr.length < 2) return arr;
+        int m = arr.length / 2;
+        int[] arr1 = Arrays.copyOfRange(arr, 0, m);
+        int[] arr2 = Arrays.copyOfRange(arr, m, arr.length);
+        return merge(sort(arr1), sort(arr2));
+    }
+
+    public static int[] merge(int[] arr1, int arr2[]){
+        int n = arr1.length + arr2.length;
+        int[] arr = new int[n];
+        int i1=0;
+        int i2=0;
+        for(int i=0;i<n;i++){
+            if(i1 == arr1.length){
+                arr[i] = arr2[i2++];
+            }else if(i2 == arr2.length){
+                arr[i] = arr1[i1++];
+            }else{
+                if(arr1[i1] < arr2[i2]){
+                    arr[i] = arr1[i1++];
+                }else{
+                    arr[i] = arr2[i2++];
+                }
+            }
+        }
+        return arr;
     }
 }
