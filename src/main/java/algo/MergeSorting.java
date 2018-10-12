@@ -6,12 +6,10 @@ import java.util.*;
 public class MergeSorting {
 
     public static void main(String[] args) {
-        List<Integer> list = new ArrayList<>();
-        int[] arr = new int[20];
+        int[] arr = new int[10];
 
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 10; i++) {
             int i1 = new Random().nextInt(20);
-            list.add(i1);
             arr[i] = i1;
         }
 
@@ -21,7 +19,6 @@ public class MergeSorting {
 
         System.out.println(Arrays.toString(sort1)  + " time: " + (stopTime2 - startTime1)  + " " + sort1.length);
 
-        System.out.println("before : " + list.toString());
         long startTime = System.nanoTime();
         int[] sort = sort1(arr);
         long stopTime = System.nanoTime();
